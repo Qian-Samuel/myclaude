@@ -1,31 +1,28 @@
-[中文](README_CN.md) [English](README.md)
+[中文](README.md) [English](README_EN.md)
 
-# Claude Code Multi-Agent Workflow System
-
-[![Run in Smithery](https://smithery.ai/badge/skills/cexll)](https://smithery.ai/skills?ns=cexll&utm_source=github&utm_medium=badge)
-
+# Claude Code 多智能体工作流系统
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Claude Code](https://img.shields.io/badge/Claude-Code-blue)](https://claude.ai/code)
 [![Version](https://img.shields.io/badge/Version-5.6-green)](https://github.com/cexll/myclaude)
 
-> AI-powered development automation with multi-backend execution (Claude/Gemini)
+> AI 驱动的开发自动化 - 多后端执行架构 (Claude/Gemini)
 
-## Core Concept: Multi-Backend Architecture
+## 核心概念：多后端架构
 
-This system leverages a **dual-agent architecture** with pluggable AI backends:
+本系统采用**双智能体架构**与可插拔 AI 后端：
 
-| Role | Agent | Responsibility |
-|------|-------|----------------|
-| **Orchestrator** | Claude Code | Planning, context gathering, verification, user interaction |
-| **Executor** | codeagent-wrapper | Code editing, test execution (Claude/Gemini backends) |
+| 角色 | 智能体 | 职责 |
+|------|-------|------|
+| **编排者** | Claude Code | 规划、上下文收集、验证、用户交互 |
+| **执行者** | codeagent-wrapper | 代码编辑、测试执行（Claude/Gemini 后端）|
 
-**Why this separation?**
-- Claude Code excels at understanding context and orchestrating complex workflows
-- Specialized backends (Claude for code and reasoning, Gemini for UI/UX prototyping) excel at focused execution
-- Backend selection via `--backend claude|gemini` matches the model to the task
+**为什么分离？**
+- Claude Code 擅长理解上下文和编排复杂工作流
+- 专业后端（Claude 擅长代码和推理、Gemini 擅长 UI/UX 原型）专注执行
+- 通过 `--backend claude|gemini` 匹配模型与任务
 
-## Quick Start(Please execute in Powershell on Windows)
+## 快速开始（windows上请在Powershell中执行）
 
 ```bash
 git clone https://github.com/cexll/myclaude.git
@@ -33,262 +30,201 @@ cd myclaude
 python3 install.py --install-dir ~/.claude
 ```
 
-## Workflows Overview
+## 工作流概览
 
-### 0. OmO Multi-Agent Orchestrator (Recommended for Complex Tasks)
+### 0. OmO 多智能体编排器（复杂任务推荐）
 
-**Intelligent multi-agent orchestration that routes tasks to specialized agents based on risk signals.**
+**基于风险信号智能路由任务到专业智能体的多智能体编排系统。**
 
 ```bash
-/omo "analyze and fix this authentication bug"
+/omo "分析并修复这个认证 bug"
 ```
 
-**Agent Hierarchy:**
-| Agent | Role | Backend | Model |
-|-------|------|---------|-------|
-| `oracle` | Technical advisor | Claude | claude-opus-4-5 |
-| `librarian` | External research | Claude | claude-sonnet-4-5 |
-| `explore` | Codebase search | Claude | claude-haiku-4-5 |
-| `develop` | Code implementation | Claude | claude-opus-4-5 |
-| `frontend-ui-ux-engineer` | UI/UX specialist | Gemini | gemini-3-pro |
-| `document-writer` | Documentation | Gemini | gemini-3-flash |
+**智能体层级：**
+| 智能体 | 角色 | 后端 | 模型 |
+|-------|------|------|------|
+| `oracle` | 技术顾问 | Claude | claude-opus-4-5 |
+| `librarian` | 外部研究 | Claude | claude-sonnet-4-5 |
+| `explore` | 代码库搜索 | Claude | claude-haiku-4-5 |
+| `develop` | 代码实现 | Claude | claude-opus-4-5 |
+| `frontend-ui-ux-engineer` | UI/UX 专家 | Gemini | gemini-3-pro |
+| `document-writer` | 文档撰写 | Gemini | gemini-3-flash |
 
-**Routing Signals (Not Fixed Pipeline):**
-- Code location unclear → `explore`
-- External library/API → `librarian`
-- Risky/multi-file change → `oracle`
-- Implementation needed → `develop` / `frontend-ui-ux-engineer`
+**路由信号（非固定流水线）：**
+- 代码位置不明确 → `explore`
+- 外部库/API → `librarian`
+- 高风险/多文件变更 → `oracle`
+- 需要实现 → `develop` / `frontend-ui-ux-engineer`
 
-**Common Recipes:**
-- Explain code: `explore`
-- Small fix with known location: `develop` directly
-- Bug fix, location unknown: `explore → develop`
-- Cross-cutting refactor: `explore → oracle → develop`
-- External API integration: `explore + librarian → oracle → develop`
+**常用配方：**
+- 解释代码：`explore`
+- 位置已知的小修复：直接 `develop`
+- Bug 修复，位置未知：`explore → develop`
+- 跨模块重构：`explore → oracle → develop`
+- 外部 API 集成：`explore + librarian → oracle → develop`
 
-**Best For:** Complex bug investigation, multi-file refactoring, architecture decisions
+**适用场景：** 复杂 bug 调查、多文件重构、架构决策
 
 ---
 
-### 1. Dev Workflow (Recommended)
+### 1. Dev 工作流（推荐）
 
-**The primary workflow for most development tasks.**
+**大多数开发任务的首选工作流。**
 
 ```bash
-/dev "implement user authentication with JWT"
+/dev "实现 JWT 用户认证"
 ```
 
-**6-Step Process:**
-1. **Requirements Clarification** - Interactive Q&A to clarify scope
-2. **Claude Deep Analysis** - Codebase exploration and architecture decisions
-3. **Dev Plan Generation** - Structured task breakdown with test requirements
-4. **Parallel Execution** - Claude executes tasks concurrently
-5. **Coverage Validation** - Enforce ≥90% test coverage
-6. **Completion Summary** - Report with file changes and coverage stats
+**6 步流程：**
+1. **需求澄清** - 交互式问答明确范围
+2. **Claude 深度分析** - 代码库探索和架构决策
+3. **开发计划生成** - 结构化任务分解和测试要求
+4. **并行执行** - Claude 并发执行任务
+5. **覆盖率验证** - 强制 ≥90% 测试覆盖率
+6. **完成总结** - 文件变更和覆盖率报告
 
-**Key Features:**
-- Claude Code orchestrates, Claude executes all code changes
-- Automatic task parallelization for speed
-- Mandatory 90% test coverage gate
-- Rollback on failure
+**核心特性：**
+- Claude Code 编排，Claude 执行所有代码变更
+- 自动任务并行化提升速度
+- 强制 90% 测试覆盖率门禁
+- 失败自动回滚
 
-**Best For:** Feature development, refactoring, bug fixes with tests
+**适用场景：** 功能开发、重构、带测试的 bug 修复
 
 ---
 
-### 2. BMAD Agile Workflow
+### 2. BMAD 敏捷工作流
 
-**Full enterprise agile methodology with 6 specialized agents.**
+**包含 6 个专业智能体的完整企业敏捷方法论。**
 
 ```bash
-/bmad-pilot "build e-commerce checkout system"
+/bmad-pilot "构建电商结账系统"
 ```
 
-**Agents:**
-| Agent | Role |
+**智能体角色：**
+| 智能体 | 职责 |
 |-------|------|
-| Product Owner | Requirements & user stories |
-| Architect | System design & tech decisions |
-| Tech Lead | Sprint planning & task breakdown |
-| Developer | Implementation |
-| Code Reviewer | Quality assurance |
-| QA Engineer | Testing & validation |
+| Product Owner | 需求与用户故事 |
+| Architect | 系统设计与技术决策 |
+| Tech Lead | Sprint 规划与任务分解 |
+| Developer | 实现 |
+| Code Reviewer | 质量保证 |
+| QA Engineer | 测试与验证 |
 
-**Process:**
+**流程：**
 ```
-Requirements → Architecture → Sprint Plan → Development → Review → QA
-     ↓              ↓             ↓            ↓          ↓       ↓
-   PRD.md      DESIGN.md     SPRINT.md     Code      REVIEW.md  TEST.md
+需求 → 架构 → Sprint计划 → 开发 → 审查 → QA
+ ↓      ↓       ↓         ↓      ↓      ↓
+PRD.md DESIGN.md SPRINT.md Code REVIEW.md TEST.md
 ```
 
-**Best For:** Large features, team coordination, enterprise projects
+**适用场景：** 大型功能、团队协作、企业项目
 
 ---
 
-### 3. Requirements-Driven Workflow
+### 3. 需求驱动工作流
 
-**Lightweight requirements-to-code pipeline.**
+**轻量级需求到代码流水线。**
 
 ```bash
-/requirements-pilot "implement API rate limiting"
+/requirements-pilot "实现 API 限流"
 ```
 
-**Process:**
-1. Requirements generation with quality scoring
-2. Implementation planning
-3. Code generation
-4. Review and testing
+**流程：**
+1. 带质量评分的需求生成
+2. 实现规划
+3. 代码生成
+4. 审查和测试
 
-**Best For:** Quick prototypes, well-defined features
+**适用场景：** 快速原型、明确定义的功能
 
 ---
 
-### 4. Development Essentials
+### 4. 开发基础命令
 
-**Direct commands for daily coding tasks.**
+**日常编码任务的直接命令。**
 
-| Command | Purpose |
-|---------|---------|
-| `/code` | Implement a feature |
-| `/debug` | Debug an issue |
-| `/test` | Write tests |
-| `/review` | Code review |
-| `/optimize` | Performance optimization |
-| `/refactor` | Code refactoring |
-| `/docs` | Documentation |
+| 命令 | 用途 |
+|------|------|
+| `/code` | 实现功能 |
+| `/debug` | 调试问题 |
+| `/test` | 编写测试 |
+| `/review` | 代码审查 |
+| `/optimize` | 性能优化 |
+| `/refactor` | 代码重构 |
+| `/docs` | 编写文档 |
 
-**Best For:** Quick tasks, no workflow overhead needed
-
-## Enterprise Workflow Features
-
-- **Multi-backend execution:** `codeagent-wrapper --backend claude|gemini` (default `claude`) so you can match the model to the task without changing workflows.
-- **GitHub workflow commands:** `/gh-create-issue "short need"` creates structured issues; `/gh-issue-implement 123` pulls issue #123, drives development, and prepares the PR.
-- **Skills + hooks activation:** .claude/hooks run automation (tests, reviews), while `.claude/skills/skill-rules.json` auto-suggests the right skills. Keep hooks enabled in `.claude/settings.json` to activate the enterprise workflow helpers.
+**适用场景：** 快速任务，无需工作流开销
 
 ---
 
-## Version Requirements
+## 安装
 
-<!--
-### Codex CLI (Optional - Not used by default)
-**Minimum version:** Check compatibility with your installation
-
-The codeagent-wrapper uses these Codex CLI features:
-- `codex e` - Execute commands (shorthand for `codex exec`)
-- `--skip-git-repo-check` - Skip git repository validation
-- `--json` - JSON stream output format
-- `-C <workdir>` - Set working directory
-- `resume <session_id>` - Resume previous sessions
-
-**Verify Codex CLI is installed:**
-```bash
-which codex
-codex --version
-```
--->
-
-### Claude CLI
-**Minimum version:** Check compatibility with your installation
-
-Required features:
-- `--output-format stream-json` - Streaming JSON output format
-- `--setting-sources` - Control setting sources (prevents infinite recursion)
-- `--dangerously-skip-permissions` - Skip permission prompts (use with caution)
-- `-p` - Prompt input flag
-- `-r <session_id>` - Resume sessions
-
-**Security Note:** The wrapper adds `--dangerously-skip-permissions` for Claude by default. Set `CODEAGENT_SKIP_PERMISSIONS=false` to disable if you need permission prompts.
-
-**Verify Claude CLI is installed:**
-```bash
-which claude
-claude --version
-```
-
-### Gemini CLI
-**Minimum version:** Check compatibility with your installation
-
-Required features:
-- `-o stream-json` - JSON stream output format
-- `-y` - Auto-approve prompts (non-interactive mode)
-- `-r <session_id>` - Resume sessions
-- `-p` - Prompt input flag
-
-**Verify Gemini CLI is installed:**
-```bash
-which gemini
-gemini --version
-```
-
----
-
-## Installation
-
-### Modular Installation (Recommended)
+### 模块化安装（推荐）
 
 ```bash
-# Install all enabled modules (dev + essentials by default)
+# 安装所有启用的模块（默认：dev + essentials）
 python3 install.py --install-dir ~/.claude
 
-# Install specific module
+# 安装特定模块
 python3 install.py --module dev
 
-# List available modules
+# 列出可用模块
 python3 install.py --list-modules
 
-# Force overwrite existing files
+# 强制覆盖现有文件
 python3 install.py --force
 ```
 
-### Available Modules
+### 可用模块
 
-| Module | Default | Description |
-|--------|---------|-------------|
-| `dev` | ✓ Enabled | Dev workflow + Claude integration |
-| `essentials` | ✓ Enabled | Core development commands |
-| `bmad` | Disabled | Full BMAD agile workflow |
-| `requirements` | Disabled | Requirements-driven workflow |
+| 模块 | 默认 | 描述 |
+|------|------|------|
+| `dev` | ✓ 启用 | Dev 工作流 + Claude 集成 |
+| `essentials` | ✓ 启用 | 核心开发命令 |
+| `bmad` | 禁用 | 完整 BMAD 敏捷工作流 |
+| `requirements` | 禁用 | 需求驱动工作流 |
 
-### What Gets Installed
+### 安装内容
 
 ```
 ~/.claude/
 ├── bin/
-│   └── codeagent-wrapper    # Main executable
-├── CLAUDE.md                # Core instructions and role definition
-├── commands/                # Slash commands (/dev, /code, etc.)
-├── agents/                  # Agent definitions
+│   └── codeagent-wrapper    # 主可执行文件
+├── CLAUDE.md                # 核心指令和角色定义
+├── commands/                # 斜杠命令 (/dev, /code 等)
+├── agents/                  # 智能体定义
 ├── skills/
 │   └── omo/
-│       └── SKILL.md         # OmO multi-agent orchestration skill
-├── config.json              # Configuration
-└── installed_modules.json   # Installation status
+│       └── SKILL.md         # OmO 多智能体编排技能
+├── config.json              # 配置文件
+└── installed_modules.json   # 安装状态
 ```
 
-### Customizing Installation Directory
+### 自定义安装目录
 
-By default, myclaude installs to `~/.claude`. You can customize this using the `INSTALL_DIR` environment variable:
+默认情况下，myclaude 安装到 `~/.claude`。您可以使用 `INSTALL_DIR` 环境变量自定义安装目录：
 
 ```bash
-# Install to custom directory
+# 安装到自定义目录
 INSTALL_DIR=/opt/myclaude bash install.sh
 
-# Update your PATH accordingly
+# 相应更新您的 PATH
 export PATH="/opt/myclaude/bin:$PATH"
 ```
 
-**Directory Structure:**
-- `$INSTALL_DIR/bin/` - codeagent-wrapper binary
-- `$INSTALL_DIR/skills/` - Skill definitions
-- `$INSTALL_DIR/config.json` - Configuration file
-- `$INSTALL_DIR/commands/` - Slash command definitions
-- `$INSTALL_DIR/agents/` - Agent definitions
+**目录结构：**
+- `$INSTALL_DIR/bin/` - codeagent-wrapper 可执行文件
+- `$INSTALL_DIR/skills/` - 技能定义
+- `$INSTALL_DIR/config.json` - 配置文件
+- `$INSTALL_DIR/commands/` - 斜杠命令定义
+- `$INSTALL_DIR/agents/` - 智能体定义
 
-**Note:** When using a custom installation directory, ensure that `$INSTALL_DIR/bin` is added to your `PATH` environment variable.
+**注意：** 使用自定义安装目录时，请确保将 `$INSTALL_DIR/bin` 添加到您的 `PATH` 环境变量中。
 
-### Configuration
+### 配置
 
-Edit `config.json` to customize:
+编辑 `config.json` 自定义：
 
 ```json
 {
@@ -308,30 +244,30 @@ Edit `config.json` to customize:
 }
 ```
 
-**Operation Types:**
-| Type | Description |
-|------|-------------|
-| `merge_dir` | Merge subdirs (commands/, agents/) into install dir |
-| `copy_dir` | Copy entire directory |
-| `copy_file` | Copy single file to target path |
-| `run_command` | Execute shell command |
+**操作类型：**
+| 类型 | 描述 |
+|------|------|
+| `merge_dir` | 合并子目录 (commands/, agents/) 到安装目录 |
+| `copy_dir` | 复制整个目录 |
+| `copy_file` | 复制单个文件到目标路径 |
+| `run_command` | 执行 shell 命令 |
 
 ---
 
-## Claude Integration
+## Claude 集成
 
-The codeagent-wrapper enables Claude Code to delegate code execution to Claude CLI.
+codeagent-wrapper 使 Claude Code 能够将代码执行委托给 Claude CLI。
 
-### Usage in Workflows
+### 工作流中的使用
 
 ```bash
-# Claude is invoked via codeagent-wrapper
+# 通过 codeagent-wrapper 调用 Claude
 codeagent-wrapper --backend claude - <<'EOF'
-implement @src/auth.ts with JWT validation
+在 @src/auth.ts 中实现 JWT 验证
 EOF
 ```
 
-### Parallel Execution
+### 并行执行
 
 ```bash
 codeagent-wrapper --parallel <<'EOF'
@@ -339,215 +275,158 @@ codeagent-wrapper --parallel <<'EOF'
 id: backend_api
 workdir: /project/backend
 ---CONTENT---
-implement REST endpoints for /api/users
+实现 /api/users 的 REST 端点
 
 ---TASK---
 id: frontend_ui
 workdir: /project/frontend
 dependencies: backend_api
 ---CONTENT---
-create React components consuming the API
+创建消费 API 的 React 组件
 EOF
 ```
 
-### Install codeagent-wrapper
+### 安装 codeagent-wrapper
 
 ```bash
-# Automatic (via dev module)
+# 自动（通过 dev 模块）
 python3 install.py --module dev
 
-# Manual
+# 手动
 bash install.sh
 ```
 
-#### Windows
+#### Windows 系统
 
-Windows installs place `codeagent-wrapper.exe` in `%USERPROFILE%\bin`.
+Windows 系统会将 `codeagent-wrapper.exe` 安装到 `%USERPROFILE%\bin`。
 
 ```powershell
-# PowerShell (recommended)
+# PowerShell（推荐）
 powershell -ExecutionPolicy Bypass -File install.ps1
 
-# Batch (cmd)
+# 批处理（cmd）
 install.bat
 ```
 
-**Add to PATH** (if installer doesn't detect it):
+**添加到 PATH**（如果安装程序未自动检测）：
 
 ```powershell
-# PowerShell - persistent for current user
+# PowerShell - 永久添加（当前用户）
 [Environment]::SetEnvironmentVariable('PATH', "$HOME\bin;" + [Environment]::GetEnvironmentVariable('PATH','User'), 'User')
 
-# PowerShell - current session only
+# PowerShell - 仅当前会话
 $Env:PATH = "$HOME\bin;$Env:PATH"
 ```
 
 ```batch
-REM cmd.exe - persistent for current user (use PowerShell method above instead)
-REM WARNING: This expands %PATH% which includes system PATH, causing duplication
-REM Note: Using reg add instead of setx to avoid 1024-character truncation limit
+REM cmd.exe - 永久添加（当前用户）（建议使用上面的 PowerShell 方法）
+REM 警告：此命令会展开 %PATH% 包含系统 PATH，导致重复
+REM 注意：使用 reg add 而非 setx 以避免 1024 字符截断限制
 reg add "HKCU\Environment" /v Path /t REG_EXPAND_SZ /d "%USERPROFILE%\bin;%PATH%" /f
 ```
 
 ---
 
-## Workflow Selection Guide
+## 工作流选择指南
 
-| Scenario | Recommended Workflow |
-|----------|---------------------|
-| New feature with tests | `/dev` |
-| Quick bug fix | `/debug` or `/code` |
-| Large multi-sprint feature | `/bmad-pilot` |
-| Prototype or POC | `/requirements-pilot` |
-| Code review | `/review` |
-| Performance issue | `/optimize` |
+| 场景 | 推荐工作流 |
+|------|----------|
+| 带测试的新功能 | `/dev` |
+| 快速 bug 修复 | `/debug` 或 `/code` |
+| 大型多 Sprint 功能 | `/bmad-pilot` |
+| 原型或 POC | `/requirements-pilot` |
+| 代码审查 | `/review` |
+| 性能问题 | `/optimize` |
 
 ---
 
-## Troubleshooting
+## 故障排查
 
-### Common Issues
+### 常见问题
 
-**codeagent-wrapper not found:**
+**codeagent-wrapper 未找到：**
 ```bash
-# Installer auto-adds PATH, check if configured
+# 安装程序会自动添加 PATH，检查是否已添加
 if [[ ":$PATH:" != *":$HOME/.claude/bin:"* ]]; then
     echo "PATH not configured. Reinstalling..."
     bash install.sh
 fi
 
-# Or manually add (idempotent command)
+# 或手动添加（幂等性命令）
 [[ ":$PATH:" != *":$HOME/.claude/bin:"* ]] && echo 'export PATH="$HOME/.claude/bin:$PATH"' >> ~/.zshrc
 ```
 
-**Permission denied:**
+**权限被拒绝：**
 ```bash
 python3 install.py --install-dir ~/.claude --force
 ```
 
-**Module not loading:**
+**模块未加载：**
 ```bash
-# Check installation status
+# 检查安装状态
 cat ~/.claude/installed_modules.json
 
-# Reinstall specific module
+# 重新安装特定模块
 python3 install.py --module dev --force
-```
-
-### Version Compatibility Issues
-
-**Backend CLI not found:**
-```bash
-# Check if backend CLIs are installed
-which claude
-which gemini
-
-# Install missing backends
-# Claude: Follow installation instructions at https://claude.ai/docs
-# Gemini: Follow installation instructions at https://ai.google.dev/docs
-```
-
-**Unsupported CLI flags:**
-```bash
-# If you see errors like "unknown flag" or "invalid option"
-
-# Check backend CLI version
-claude --version
-gemini --version
-
-# For Claude: Ensure it supports `--output-format stream-json`, `--setting-sources`, `-r`
-# For Gemini: Ensure it supports `-o stream-json`, `-y`, `-r`, `-p`
-
-# Update your backend CLI to the latest version if needed
-```
-
-**JSON parsing errors:**
-```bash
-# If you see "failed to parse JSON output" errors
-
-# Verify the backend outputs stream-json format
-claude --output-format stream-json -p "test"  # Should output stream JSON
-
-# If not, your backend CLI version may be too old or incompatible
-```
-
-**Infinite recursion with Claude backend:**
-```bash
-# The wrapper prevents this with `--setting-sources ""` flag
-# If you still see recursion, ensure your Claude CLI supports this flag
-
-claude --help | grep "setting-sources"
-
-# If flag is not supported, upgrade Claude CLI
-```
-
-**Session resume failures:**
-```bash
-# Check if session ID is valid
-claude history
-
-# Ensure backend CLI supports session resumption
-claude -r <session_id> "test"
-
-# If not supported, use new sessions instead of resume mode
 ```
 
 ---
 
-## FAQ (Frequently Asked Questions)
+## 常见问题 (FAQ)
 
-### Q1: `codeagent-wrapper` execution fails with "Unknown event format"
+### Q1: `codeagent-wrapper` 执行时报错 "Unknown event format"
 
-**Problem:**
+**问题描述：**
+执行 `codeagent-wrapper` 时出现错误：
 ```
 Unknown event format: {"type":"turn.started"}
 Unknown event format: {"type":"assistant", ...}
 ```
 
-**Solution:**
-This is a logging event format display issue and does not affect actual functionality. It will be fixed in the next version. You can ignore these log outputs.
+**解决方案：**
+这是日志事件流的显示问题，不影响实际功能执行。预计在下个版本中修复。如需排查其他问题，可忽略此日志输出。
 
-**Related Issue:** [#96](https://github.com/cexll/myclaude/issues/96)
-
----
-
-### Q2: Gemini cannot read files ignored by `.gitignore`
-
-**Problem:**
-When using `codeagent-wrapper --backend gemini`, files in directories like `.claude/` that are ignored by `.gitignore` cannot be read.
-
-**Solution:**
-- **Option 1:** Remove `.claude/` from your `.gitignore` file
-- **Option 2:** Ensure files that need to be read are not in `.gitignore` list
-
-**Related Issue:** [#75](https://github.com/cexll/myclaude/issues/75)
+**相关 Issue：** [#96](https://github.com/cexll/myclaude/issues/96)
 
 ---
 
-### Q3: `/dev` command parallel execution is very slow
+### Q2: Gemini 无法读取 `.gitignore` 忽略的文件
 
-**Problem:**
-Using `/dev` command for simple features takes too long (over 30 minutes) with no visibility into task progress.
+**问题描述：**
+使用 `codeagent-wrapper --backend gemini` 时，无法读取 `.claude/` 等被 `.gitignore` 忽略的目录中的文件。
 
-**Solution:**
-1. **Check logs:** Review `C:\Users\User\AppData\Local\Temp\codeagent-wrapper-*.log` to identify bottlenecks
-2. **Adjust backend:**
-   - Try faster models like `claude-haiku-4-5` for exploration tasks
-   - Running in WSL may be significantly faster
-3. **Workspace:** Use a single repository instead of monorepo with multiple sub-projects
+**解决方案：**
+- **方案一：** 在项目根目录的 `.gitignore` 中取消对 `.claude/` 的忽略
+- **方案二：** 确保需要读取的文件不在 `.gitignore` 忽略列表中
 
-**Related Issue:** [#77](https://github.com/cexll/myclaude/issues/77)
+**相关 Issue：** [#75](https://github.com/cexll/myclaude/issues/75)
+
+---
+
+### Q3: `/dev` 命令并行执行特别慢
+
+**问题描述：**
+使用 `/dev` 命令开发简单功能耗时过长（超过30分钟），无法了解任务执行状态。
+
+**解决方案：**
+1. **检查日志：** 查看 `C:\Users\User\AppData\Local\Temp\codeagent-wrapper-*.log` 分析瓶颈
+2. **调整后端：**
+   - 尝试使用 `claude-haiku-4-5` 等更快的模型进行探索任务
+   - 在 WSL 环境下运行速度可能更快
+3. **工作区选择：** 使用独立的代码仓库而非包含多个子项目的 monorepo
+
+**相关 Issue：** [#77](https://github.com/cexll/myclaude/issues/77)
 
 ---
 
 <!--
-### Q4: Codex permission denied with new Go version (Legacy - Codex no longer used by default)
+### Q4: 新版 Go 实现的 Codex 权限不足（旧版 - Codex 已不再作为默认后端）
 
-**Problem:**
-After upgrading to the new Go-based Codex implementation, execution fails with permission denied errors.
+**问题描述：**
+升级到新版 Go 实现的 Codex 后，出现权限不足的错误。
 
-**Solution:**
-Add the following configuration to `~/.codex/config.yaml` (Windows: `c:\user\.codex\config.toml`):
+**解决方案：**
+在 `~/.codex/config.yaml` 中添加以下配置（Windows: `c:\user\.codex\config.toml`）：
 ```yaml
 model = "gpt-5.1-codex-max"
 model_reasoning_effort = "high"
@@ -558,58 +437,49 @@ disable_response_storage = true
 network_access = true
 ```
 
-**Key settings:**
-- `approval_policy = "never"` - Remove approval restrictions
-- `sandbox_mode = "workspace-write"` - Allow workspace write access
-- `network_access = true` - Enable network access
+**关键配置说明：**
+- `approval_policy = "never"` - 移除审批限制
+- `sandbox_mode = "workspace-write"` - 允许工作区写入权限
+- `network_access = true` - 启用网络访问
 
-**Related Issue:** [#31](https://github.com/cexll/myclaude/issues/31)
+**相关 Issue：** [#31](https://github.com/cexll/myclaude/issues/31)
 -->
 
 ---
 
-### Q4: How to disable default skip-permissions mode
+### Q4: 如何禁用默认的 skip-permissions 模式
 
-**Background:**
-By default, codeagent-wrapper enables skip-permissions mode for Claude backend:
-- `CODEAGENT_SKIP_PERMISSIONS=true` - Skips Claude permission prompts
+**背景说明：**
+默认情况下，codeagent-wrapper 启用 Claude 后端的 skip-permissions 模式：
+- `CODEAGENT_SKIP_PERMISSIONS=true` - 跳过 Claude 权限提示
 
-**To disable (if you need permission protection):**
+**禁用方法（如需权限保护）：**
 ```bash
 export CODEAGENT_SKIP_PERMISSIONS=false
 ```
 
-Or add to your shell profile (`~/.zshrc` or `~/.bashrc`):
+或添加到 shell 配置文件（`~/.zshrc` 或 `~/.bashrc`）：
 ```bash
 echo 'export CODEAGENT_SKIP_PERMISSIONS=false' >> ~/.zshrc
 ```
 
-**Note:** Disabling skip-permissions mode will require manual approval for certain operations.
+**注意：** 禁用 skip-permissions 模式后，某些操作将需要手动批准。
 
 ---
 
-**Still having issues?** Visit [GitHub Issues](https://github.com/cexll/myclaude/issues) to search or report new issues.
+**仍有疑问？** 请访问 [GitHub Issues](https://github.com/cexll/myclaude/issues) 搜索或提交新问题。
 
 ---
 
-## Documentation
-- **[Codeagent-Wrapper Guide](docs/CODEAGENT-WRAPPER.md)** - Multi-backend execution wrapper
-- **[Hooks Documentation](docs/HOOKS.md)** - Custom hooks and automation
+## 许可证
 
-### Additional Resources
-- **[Installation Log](install.log)** - Installation history and troubleshooting
+AGPL-3.0 License - 查看 [LICENSE](LICENSE)
 
----
+## 支持
 
-## License
-
-AGPL-3.0 License - see [LICENSE](LICENSE)
-
-## Support
-
-- **Issues**: [GitHub Issues](https://github.com/cexll/myclaude/issues)
-- **Documentation**: [docs/](docs/)
+- **问题反馈**: [GitHub Issues](https://github.com/cexll/myclaude/issues)
+- **文档**: [docs/](docs/)
 
 ---
 
-**Claude Code = Better Development** - Orchestration meets execution.
+**Claude Code + Claude = 更好的开发** - 编排遇见执行。
