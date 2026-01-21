@@ -330,7 +330,16 @@ Your task:
 3. Confirm successful save"
 ```
 
-### Phase 4: Development Implementation (Automated)
+### Phase 4: Development Implementation (Hybrid Routing)
+
+Development phase uses hybrid routing strategy, assigning tasks to the most suitable executor based on task type:
+
+#### Step 1: Task Classification
+Parse and classify tasks from Sprint Plan:
+- **UI Tasks**: Widgets/components, page layouts, styles/themes, animations, UI interactions
+- **Code Tasks**: Data models, business logic, API calls, state management, test code
+
+#### Step 2: Code Tasks Execution (bmad-dev agent)
 ```
 Use Task tool with bmad-dev agent:
 
@@ -339,16 +348,47 @@ Repository Scan Path: ./.claude/specs/{feature_name}/00-repo-scan.md
 Feature Name: {feature_name}
 Working Directory: [Project root]
 
-Task: Implement ALL features across ALL sprints according to specifications.
+Task: Implement all NON-UI tasks from Sprint Plan
 Instructions:
 1. Read PRD from ./.claude/specs/{feature_name}/01-product-requirements.md
 2. Read Architecture from ./.claude/specs/{feature_name}/02-system-architecture.md
 3. Read Sprint Plan from ./.claude/specs/{feature_name}/03-sprint-plan.md
-4. Identify and implement ALL sprints sequentially (Sprint 1, Sprint 2, etc.)
-5. Complete ALL tasks across ALL sprints before finishing
-6. Create production-ready code with tests for entire feature set
-7. Report implementation status for each sprint and overall completion
+4. Identify and implement all Code-type tasks (data models, business logic, APIs, state management, tests)
+5. **SKIP all UI/component/style related tasks** - these will be handled by frontend-ui-ux-engineer
+6. Ensure code quality and test coverage
+7. Report Code tasks completion status
 ```
+
+#### Step 3: UI Tasks Execution (frontend-ui-ux-engineer via codeagent-wrapper)
+```bash
+codeagent-wrapper --backend gemini --agent frontend-ui-ux-engineer - [Working Directory] <<'EOF'
+## Original User Request
+Implement UI components for the feature as specified in Sprint Plan.
+
+## Context Pack
+- PRD: @.claude/specs/{feature_name}/01-product-requirements.md
+- Architecture: @.claude/specs/{feature_name}/02-system-architecture.md
+- Sprint Plan: @.claude/specs/{feature_name}/03-sprint-plan.md
+- Code tasks have been completed by bmad-dev, data layer and state management are ready
+
+## Current Task
+Implement all UI-related tasks from Sprint Plan:
+- Widget/component development
+- Page layout implementation
+- Style/theme application
+- Animation effects
+- UI interaction logic
+
+## Acceptance Criteria
+- All UI components implemented according to design specifications
+- Styles follow project theme system
+- Components correctly integrate with completed state management
+- No analyzer errors (flutter analyze, eslint, etc.)
+EOF
+```
+
+#### Step 4: Integration Verification
+Confirm Code and UI parts are correctly integrated and all components work properly together.
 
 ### Phase 4.5: Code Review (Automated)
 ```
