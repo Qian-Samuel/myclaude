@@ -1,13 +1,13 @@
 ---
 name: codeagent
-description: Execute codeagent-wrapper for multi-backend AI code tasks. Supports Codex, Claude, and Gemini backends with file references (@syntax) and structured output.
+description: Execute codeagent-wrapper for multi-backend AI code tasks. Supports Claude, Gemini, and Codex backends with file references (@syntax) and structured output.
 ---
 
 # Codeagent Wrapper Integration
 
 ## Overview
 
-Execute codeagent-wrapper commands with pluggable AI backends (Codex, Claude, Gemini). Supports file references via `@` syntax, parallel task execution with backend selection, and configurable security controls.
+Execute codeagent-wrapper commands with pluggable AI backends (Claude, Gemini, Codex). Supports file references via `@` syntax, parallel task execution with backend selection, and configurable security controls.
 
 ## When to Use
 
@@ -19,21 +19,21 @@ Execute codeagent-wrapper commands with pluggable AI backends (Codex, Claude, Ge
 
 **HEREDOC syntax** (recommended):
 ```bash
-codeagent-wrapper --backend codex - [working_dir] <<'EOF'
+codeagent-wrapper --backend claude - [working_dir] <<'EOF'
 <task content here>
 EOF
 ```
 
-**With backend selection**:
+**With gemini backend**:
 ```bash
-codeagent-wrapper --backend claude - . <<'EOF'
+codeagent-wrapper --backend gemini - . <<'EOF'
 <task content here>
 EOF
 ```
 
 **Simple tasks**:
 ```bash
-codeagent-wrapper --backend codex "simple task" [working_dir]
+codeagent-wrapper --backend claude "simple task" [working_dir]
 codeagent-wrapper --backend gemini "simple task" [working_dir]
 ```
 
@@ -41,23 +41,17 @@ codeagent-wrapper --backend gemini "simple task" [working_dir]
 
 | Backend | Command | Description | Best For |
 |---------|---------|-------------|----------|
-| codex | `--backend codex` | OpenAI Codex (default) | Code analysis, complex development |
-| claude | `--backend claude` | Anthropic Claude | Simple tasks, documentation, prompts |
+| claude | `--backend claude` | Anthropic Claude (default) | Code analysis, complex development |
 | gemini | `--backend gemini` | Google Gemini | UI/UX prototyping |
+| codex | `--backend codex` | OpenAI Codex (legacy) | Backward compatibility |
 
 ### Backend Selection Guide
 
-**Codex** (default):
+**Claude** (default):
 - Deep code understanding and complex logic implementation
 - Large-scale refactoring with precise dependency tracking
 - Algorithm optimization and performance tuning
 - Example: "Analyze the call graph of @src/core and refactor the module dependency structure"
-
-**Claude**:
-- Quick feature implementation with clear requirements
-- Technical documentation, API specs, README generation
-- Professional prompt engineering (e.g., product requirements, design specs)
-- Example: "Generate a comprehensive README for @package.json with installation, usage, and API docs"
 
 **Gemini**:
 - UI component scaffolding and layout prototyping
@@ -65,8 +59,12 @@ codeagent-wrapper --backend gemini "simple task" [working_dir]
 - Interactive element generation with accessibility support
 - Example: "Create a responsive dashboard layout with sidebar navigation and data visualization cards"
 
+**Codex** (legacy):
+- Retained for backward compatibility
+- Use claude instead for new projects
+
 **Backend Switching**:
-- Start with Codex for analysis, switch to Claude for documentation, then Gemini for UI implementation
+- Start with Claude for analysis and development, switch to Gemini for UI implementation
 - Use per-task backend selection in parallel mode to optimize for each task's strengths
 
 ## Parameters
@@ -88,13 +86,13 @@ SESSION_ID: 019a7247-ac9d-71f3-89e2-a823dbd8fd14
 ## Resume Session
 
 ```bash
-# Resume with codex backend
-codeagent-wrapper --backend codex resume <session_id> - <<'EOF'
+# Resume with claude backend
+codeagent-wrapper --backend claude resume <session_id> - <<'EOF'
 <follow-up task>
 EOF
 
-# Resume with specific backend
-codeagent-wrapper --backend claude resume <session_id> - <<'EOF'
+# Resume with gemini backend
+codeagent-wrapper --backend gemini resume <session_id> - <<'EOF'
 <follow-up task>
 EOF
 ```
@@ -106,7 +104,7 @@ EOF
 codeagent-wrapper --parallel <<'EOF'
 ---TASK---
 id: task1
-backend: codex
+backend: claude
 workdir: /path/to/dir
 ---CONTENT---
 task content
@@ -134,7 +132,7 @@ EOF
 codeagent-wrapper --parallel <<'EOF'
 ---TASK---
 id: task1
-backend: codex
+backend: claude
 workdir: /path/to/dir
 ---CONTENT---
 analyze code structure
@@ -149,7 +147,7 @@ id: task3
 backend: gemini
 dependencies: task2
 ---CONTENT---
-generate implementation code
+generate UI implementation
 EOF
 ```
 

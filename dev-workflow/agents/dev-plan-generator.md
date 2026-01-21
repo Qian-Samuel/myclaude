@@ -79,7 +79,7 @@ Your output is a single file: `./.claude/specs/{feature_name}/dev-plan.md`
    - `ui`: touches UI/style/component work (e.g., .css/.scss/.tsx/.jsx/.vue, tailwind, design tweaks)
    - `quick-fix`: small, fast changes (config tweaks, small bug fix, minimal scope); do NOT use for UI work
    - `default`: everything else
-   - Note: `/dev` Step 4 routes backend by `type` (default→codex, ui→gemini, quick-fix→claude; missing type → default)
+   - Note: `/dev` Step 4 routes backend by `type` (default→claude, ui→gemini, quick-fix→claude; missing type → default)
 5. **Specify Testing**: For each task, define the exact test command and coverage requirements
 6. **Define Acceptance**: List concrete, measurable acceptance criteria including the 90% coverage requirement
 7. **Document Technical Points**: Note key technical decisions and constraints
