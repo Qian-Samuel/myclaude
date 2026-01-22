@@ -244,7 +244,7 @@ python3 install.py --force
 |--------|---------|-------------|
 | `dev` | ✓ Enabled | Dev workflow + Claude integration |
 | `essentials` | ✓ Enabled | Core development commands |
-| `bmad` | Disabled | Full BMAD agile workflow |
+| `bmad` | ✓ Enabled | Full BMAD agile workflow |
 | `requirements` | Disabled | Requirements-driven workflow |
 
 ### What Gets Installed

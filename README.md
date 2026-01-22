@@ -182,7 +182,7 @@ python3 install.py --force
 |------|------|------|
 | `dev` | ✓ 启用 | Dev 工作流 + Claude 集成 |
 | `essentials` | ✓ 启用 | 核心开发命令 |
-| `bmad` | 禁用 | 完整 BMAD 敏捷工作流 |
+| `bmad` | ✓ 启用 | 完整 BMAD 敏捷工作流 |
 | `requirements` | 禁用 | 需求驱动工作流 |
 
 ### 安装内容
